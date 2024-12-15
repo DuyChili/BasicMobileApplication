@@ -18,6 +18,8 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 
 class MainActivity : AppCompatActivity() {
 
@@ -60,7 +62,15 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     if (response.isSuccessful) {
                         val conversionResult = response.body()?.conversion_result
-                        binding.tvResult.setText( conversionResult.toString() )// Hiển thị kết quả
+                        // Định dạng số với dấu chấm
+                        val symbols = DecimalFormatSymbols().apply {
+                            groupingSeparator = '.'
+                        }
+                        val decimalFormat = DecimalFormat("#,###", symbols)
+
+                        // Chuyển đổi giá trị và hiển thị
+                        val formattedResult = decimalFormat.format(conversionResult)
+                        binding.tvResult.setText(formattedResult.toString()) // Hiển thị kết quả
                     } else {
                         Log.e("API Error", "Response Error: ${response.message()}")
                         binding.tvResult.setText("API Error: ${response.message()}")
